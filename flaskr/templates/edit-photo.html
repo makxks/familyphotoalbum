@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block header %}
+ <h1>{% block title %}Edit Photo{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <form class="" action="{{ action }}" method="post">
+    <label for="phototitle">Edit Photo Title</label>
+    <input type="text" name="phototitle" id="phototitle" required>
+    <button class="btn btn-primary" type="submit">Edit Photo</button>
+  </form>
+
+  <form class="" action="{{ action2 }}" method="post">
+    <label for="photorotation">Rotation Angle (Clockwise)</label>
+    <input type="number" name="photorotation" id="photorotation" required>
+    <button class="btn btn-primary" type="submit">Rotate Photo</button>
+  </form>
+
+  <a class="btn btn-danger" href="{{ url_for('deletePhoto', photo = photo_id) }}">Do you want to delete the photo instead?</a>
+{% endblock %}
