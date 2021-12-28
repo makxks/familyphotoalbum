@@ -6,10 +6,8 @@ from flask import Flask, redirect, g, url_for, render_template, request
 from PIL import Image
 from flask_session import Session
 from tempfile import mkdtemp
-from flaskr.db import get_db
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
-from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 
 #from helpers import error_message
@@ -35,11 +33,11 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-
     app.config["TEMPLATES_AUTO_RELOAD"] = True
-    app.config["IMAGE_UPLOADS"] = os.path.join(app.instance_path,'/images')
-    app.config["IMAGE_LOADS"] = ""
+    app.config["IMAGE_UPLOADS"] = os.path.join(os.path.dirname(app.instance_path),'flaskr','static','images')
     app.config["ALLOWED_IMAGE_EXTENSIONS"] = ["JPEG", "JPG", "PNG", "GIF"]
+
+    print(app.config['IMAGE_UPLOADS'])
 
     @app.after_request
     def after_request(response):
@@ -181,12 +179,12 @@ def create_app(test_config=None):
             created_on = datetime.datetime.now()
             created_by = g.user['id']
             hash = generate_password_hash(request.form['albumsharepassword'])
-            album_id = database.execute(
-                """INSERT INTO album (title, created_on, created_by, hash) VALUES (?, ?, ?, ?) RETURNING *""", (album_title, created_on, created_by, hash)
-            )
-            album = album_id.fetchone()
             database.execute(
-                """INSERT INTO user_album (user_id, album_id) VALUES (?, ?)""", (g.user['id'], album['id'])
+                """INSERT INTO album (title, created_on, created_by, hash) VALUES (?, ?, ?, ?)""", (album_title, created_on, created_by, hash)
+            )
+
+            database.execute(
+                """INSERT INTO user_album (user_id, album_id) VALUES (?, LAST_INSERT_ROWID())""", (g.user['id'],)
             )
             database.commit()
             return redirect(url_for('index'))
@@ -203,14 +201,12 @@ def create_app(test_config=None):
             album_id = request.form['album']
             user_id = g.user['id']
 
-            comment = database.execute(
-                """INSERT INTO comment (comment, user_id) VALUES (?, ?) RETURNING *""", (comment, user_id)
+            database.execute(
+                """INSERT INTO comment (comment, user_id) VALUES (?, ?)""", (comment, user_id)
             )
 
-            comment_id = comment.fetchone()['id']
-
             database.execute(
-                """INSERT INTO album_comment (album_id, comment_id) VALUES (?, ?)""", (album_id, comment_id)
+                """INSERT INTO album_comment (album_id, comment_id) VALUES (?, LAST_INSERT_ROWID())""", (album_id,)
             )
             database.commit()
 
@@ -249,8 +245,6 @@ def create_app(test_config=None):
                 width = im.size[0]
                 height = im.size[1]
 
-                print ("before resize image width: " + str(width) + " image height: " + str(height))
-
                 ### resize to max 640px (if dimensions are greater)
 
                 if width > 640 or height > 640:
@@ -269,14 +263,12 @@ def create_app(test_config=None):
                 created_on = datetime.datetime.now()
                 created_by = g.user['id']
 
-                photo = database.execute(
-                    """INSERT INTO photo (title, created_on, created_by, location) VALUES (?, ?, ?, ?) RETURNING *""", (title, created_on, created_by, save_title)
+                database.execute(
+                    """INSERT INTO photo (title, created_on, created_by, location) VALUES (?, ?, ?, ?)""", (title, created_on, created_by, save_title)
                 )
 
-                photo_id = photo.fetchone()['id']
-
                 database.execute(
-                    """INSERT INTO album_photo (album_id, photo_id) VALUES (?, ?)""", (album, photo_id)
+                    """INSERT INTO album_photo (album_id, photo_id) VALUES (?, LAST_INSERT_ROWID())""", (album,)
                 )
                 database.commit()
 
@@ -624,12 +616,12 @@ def create_app(test_config=None):
 
         hash = generate_password_hash(hash_string)
 
-        new_album = database.execute(
-            """INSERT INTO album (title, created_on, created_by, hash) VALUES (?, ?, ?, ?) RETURNING id""", (photo[0]['title'], created_on, created_by, hash)
+        database.execute(
+            """INSERT INTO album (title, created_on, created_by, hash) VALUES (?, ?, ?, ?)""", (photo[0]['title'], created_on, created_by, hash)
         )
 
         database.execute(
-            """INSERT INTO user_album (user_id, album_id) VALUES (?, ?)""", (user[0]['id'], new_album)
+            """INSERT INTO user_album (user_id, album_id) VALUES (?, LAST_INSERT_ROWID())""", (user[0]['id'],)
         )
         database.commit()
 
