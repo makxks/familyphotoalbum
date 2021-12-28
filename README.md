@@ -1,6 +1,5 @@
 # familyvault
 
----
 
 Flask app to share photos
 
