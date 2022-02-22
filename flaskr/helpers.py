@@ -1,6 +1,6 @@
 import functools
 
-from flask import g, redirect, render_template, url_for
+from flask import g, redirect, render_template, url_for, request
 
 def login_required(f):
     """
