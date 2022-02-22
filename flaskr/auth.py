@@ -44,20 +44,8 @@ def register():
 
         print(len(usercheck.fetchall()))
 
-        if not username:
-            return error_message("must provide username", 400)
-
-        elif len(usercheck.fetchall()) > 0:
-            return error_message("username already exists", 400)
-
-        elif not password:
-            return error_message("must provide password", 400)
-
-        elif not confirmation:
-            return error_message("must provide password confirmation", 400)
-
-        elif password != confirmation:
-            return error_message("password and confirmation must match", 400)
+        if (not username) or (len(usercheck.fetchall()) > 0) or (not password) or (not confirmation) or (password != confirmation):
+            return error_message("registration error - check that all fields have been entered and that password and confirmation match", 400)
 
         if error is None:
             try:
