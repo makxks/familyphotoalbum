@@ -1,33 +1,33 @@
 {% extends 'base.html' %}
 
 {% block header %}
- <h1>{% block title %}Albums{% endblock %}</h1>
+<h1>{% block title %}Albums{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
-  <h2>Your Albums</h2>
-  <section class="albums">
-    {% for album in your_albums %}
-      <section class="album">
-        {% if album['first_photo'] != None %}
-          <img src="{{ url_for('static', filename = '/images/' + album['first_photo']['location']) }}" alt="{{album['first_photo']['title']}}">
-        {% endif %}
-        <h3><a href="{{ url_for('album', album_id = album['id']) }}">{{album['title']}}</a></h3>
-        <p>Created: {{album['created_on']}}</p>
-      </section>
-    {% endfor %}
+<h2>Your Albums</h2>
+<section class="albums">
+  {% for album in your_albums %}
+  <section class="album">
+    {% if album['first_photo'] != None %}
+    <img src="{{ url_for('static', filename = '/images/' + album['first_photo']['location']) }}" alt="{{album['first_photo']['title']}}">
+    {% endif %}
+    <h3><a href="{{ url_for('album', album_id = album['id']) }}">{{album['title']}}</a></h3>
+    <p>Created: {{album['created_on']}}</p>
   </section>
-  <hr />
-  <h2>Received Albums</h2>
-  <section class="albums">
-    {% for album in received_albums %}
-      <section class="album">
-        {% if album['first_photo'] != None %}
-          <img src="{{ url_for('static', filename = '/images/' + album['first_photo']['location']) }}" alt="{{album['first_photo']['title']}}">
-        {% endif %}
-        <h3><a href="{{ url_for('album', album_id = album['id']) }}">{{album['title']}}</a></h3>
-        <p>Created: {{album['created_on']}}</p>
-      </section>
-    {% endfor %}
+  {% endfor %}
+</section>
+<hr />
+<h2>Received Albums</h2>
+<section class="albums">
+  {% for album in received_albums %}
+  <section class="album">
+    {% if album['first_photo'] != None %}
+    <img src="{{ url_for('static', filename = '/images/' + album['first_photo']['location']) }}" alt="{{album['first_photo']['title']}}">
+    {% endif %}
+    <h3><a href="{{ url_for('album', album_id = album['id']) }}">{{album['title']}}</a></h3>
+    <p>Created: {{album['created_on']}}</p>
   </section>
+  {% endfor %}
+</section>
 {% endblock %}

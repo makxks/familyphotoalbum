@@ -1,19 +1,20 @@
 {% extends 'base.html' %}
 
 {% block header %}
- <h1>{% block title %}Share Album{% endblock %}</h1>
+<h1>{% block title %}Share Album{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
-  <p>Album can be shared in 3 ways. 2 do not require log in. The generated share link, the password link (requires the password to be input manually by changing the CHANGE_THIS part of the link), and by sharing to another user of the site through the form.</p>
-  <p>Generated Share Link:</p>
-  <p class="share-link">{{ album_link }}</p>
-  <p>Password Link</p>
-  <p class="share-link">{{ password_link }}</p>
-  <form class="" action="/shareAlbum" method="post">
-    <input type="hidden" name="album" value="{{album}}">
-    <label for="share-to">Share To (username)</label>
-    <input type="text" name="share-to" id="share-to">
-    <button class="btn btn-primary" type="submit">Share</button>
-  </form>
+<p>Album can be shared in 3 ways. 2 do not require log in. The generated share link, the password link (requires the password to be input manually by changing the CHANGE_THIS part of the link), and by sharing to another user of the site through the
+  form.</p>
+<p>Generated Share Link:</p>
+<p class="share-link">{{ album_link }}</p>
+<p>Password Link</p>
+<p class="share-link">{{ password_link }}</p>
+<form class="" action="/shareAlbum" method="post">
+  <input type="hidden" name="album" value="{{album}}">
+  <label for="share-to">Share To (username)</label>
+  <input type="text" name="share-to" id="share-to">
+  <button class="btn btn-primary" type="submit">Share</button>
+</form>
 {% endblock %}

@@ -1,17 +1,17 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Register{% endblock %}</h1>
+<h1>{% block title %}Register{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
-  <form class="" action="/auth/register" method="post">
-    <label for="username">Username</label>
-    <input type="text" name="username" id="username" required>
-    <label for="password">Password</label>
-    <input type="password" name="password" id="password" required>
-    <label for="confirm">Confirm Password</label>
-    <input type="password" name="confirm" id="confirm" required>
-    <button class="btn btn-primary" type="submit">Register</button>
-  </form>
+<form class="" action="/auth/register" method="post">
+  <label for="username">Username</label>
+  <input type="text" name="username" id="username" required>
+  <label for="password">Password</label>
+  <input type="password" name="password" id="password" required>
+  <label for="confirm">Confirm Password</label>
+  <input type="password" name="confirm" id="confirm" required>
+  <button class="btn btn-primary" type="submit">Register</button>
+</form>
 {% endblock %}

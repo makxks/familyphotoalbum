@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 
 {% block header %}
- <h1>{% block title %}Photo{% endblock %}</h1>
+<h1>{% block title %}Photo{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
-  <section class="photo">
-    <img src="{{ url_for('static',filename = '/images/' + photo[0]['location'] }}" alt="{{ photo[0]['title'] }}">
-    <p>{{ photo[0]['title'] }}</p>
-    <p>{{ photo[0]['created_by'] }}</p>
-    <p>{{ photo[0]['created_on'] }}</p>
-  </section>
+<section class="photo">
+  <img src="{{ url_for('static',filename = '/images/' + photo[0]['location'] }}" alt="{{ photo[0]['title'] }}">
+  <p>{{ photo[0]['title'] }}</p>
+  <p>{{ photo[0]['created_by'] }}</p>
+  <p>{{ photo[0]['created_on'] }}</p>
+</section>
 {% endblock %}

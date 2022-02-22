@@ -1,15 +1,15 @@
 {% extends 'base.html' %}
 
 {% block header %}
- <h1>{% block title %}Share Photo{% endblock %}</h1>
+<h1>{% block title %}Share Photo{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
-  <p>Individual photos (separate from albums), can currently only be shared to signed up users. If you wish to share an individual photo another way you may add it to it's own album and share the album via a link.</p>
-  <form class="" action="/share-photo" method="post">
-    <input type="hidden" name="photo" value="{{photo}}">
-    <label for="share-to">Share To (username)</label>
-    <input type="text" name="share-to" id="share-to">
-    <button class="btn btn-primary" type="submit">Share</button>
-  </form>
+<p>Individual photos (separate from albums), can currently only be shared to signed up users. If you wish to share an individual photo another way you may add it to it's own album and share the album via a link.</p>
+<form class="" action="/share-photo" method="post">
+  <input type="hidden" name="photo" value="{{photo}}">
+  <label for="share-to">Share To (username)</label>
+  <input type="text" name="share-to" id="share-to">
+  <button class="btn btn-primary" type="submit">Share</button>
+</form>
 {% endblock %}
