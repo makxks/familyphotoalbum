@@ -7,18 +7,23 @@
 <link href="https://fonts.googleapis.com/css2?family=Emblema+One&display=swap" rel="stylesheet">
 <div class="wrapper">
   <nav class="page-header">
-    <section class="title"><h1 id="f">Family</h1><h1 id="v">Photo</h1><h1 id="p">Album</h1></section>
+    <section class="title">
+      <h1 id="f">Family</h1>
+      <h1 id="v">Photo</h1>
+      <h1 id="p">Album</h1>
+    </section>
     <span class="green-span"></span>
     <ul>
       {% if g.user %}
-        <li><span>{{ g.user['username'] }}</span></li>
-        <li><a class="btn btn-primary" href="{{ url_for('auth.logout') }}">Log Out</a></li>
-        <li><a class="btn btn-primary" href="{{ url_for('index') }}">Albums</a>
-        <li><a class="btn btn-primary" href="{{ url_for('addAlbum') }}">Add Album</a>
+      <li><span>{{ g.user['username'] }}</span></li>
+      <li><a class="btn btn-primary" href="{{ url_for('auth.logout') }}">Log Out</a></li>
+      <li><a class="btn btn-primary" href="{{ url_for('index') }}">Albums</a>
+      <li><a class="btn btn-primary" href="{{ url_for('addAlbum') }}">Add Album</a>
       {% else %}
-        <li><a class="btn btn-primary" href="{{ url_for('auth.register') }}">Register</a></li>
-        <li><a class="btn btn-primary" href="{{ url_for('auth.login') }}">Login</a></li>
+      <li><a class="btn btn-primary" href="{{ url_for('auth.register') }}">Register</a></li>
+      <li><a class="btn btn-primary" href="{{ url_for('auth.login') }}">Login</a></li>
       {% endif %}
+      <li><a class="btn btn-primary" href="{{ url_for('albumLink') }}">Use Album Link</a>
     </ul>
   </nav>
   <section class="content">
@@ -26,7 +31,7 @@
       {% block header %}{% endblock %}
     </header>
     {% for message in get_flashed_messages() %}
-      <div class="flash">{{ message }}</div>
+    <div class="flash">{{ message }}</div>
     {% endfor %}
     {% block content %}{% endblock %}
   </section>
