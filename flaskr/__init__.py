@@ -321,91 +321,89 @@ def create_app(test_config=None):
         return render_template('album.html', album_title = album[0]['title'], album_id = album[0]['id'], album_photos = photos, comments = comments, user = g.user['id'], created_id = album[0]['created_by'], created_by = username['username'], created_on = album[0]['created_on'])
 
 
-    @app.route('/albumPassword/<album_id>/<album_password>')
-    def albumPassword(album_id, album_password):
-        database = db.get_db()
-        album = database.execute(
-            """SELECT * FROM album WHERE id = ?""", (album_id,)
-        ).fetchall()
+    @app.route('/albumLink', methods=['GET', 'POST'])
+    def albumLink():
+        if request.method == 'POST':
+            database = db.get_db()
 
-        if album == None:
-            return error_message("No album here", 403)
+            link = request.form['link']
 
-        if check_password_hash(album[0]["hash"], album_password):
-            # get photos
-            photos = database.execute(
-                """SELECT *
-                FROM photo
-                JOIN album_photo ON photo.id = album_photo.photo_id
-                JOIN album ON album_photo.album_id = album.id
-                WHERE album.id = ?""", (album_id,)
+            split_link = link.split("/")
+
+            album = database.execute(
+                """SELECT * FROM album where id = ?""", (split_link[1])
             ).fetchall()
 
-            # get comments
-            comments = database.execute(
-                """SELECT *
-                FROM comment
-                JOIN album_comment ON comment.id = album_comment.comment_id
-                JOIN album ON album_comment.album_id = album.id
-                WHERE album.id = ?""", (album_id,)
-            ).fetchall()
+            if album == None:
+                return error_message("No album here", 403)
 
-            username = database.execute(
-                """SELECT * FROM user WHERE id = ?""", (album[0]['created_by'],)
-            ).fetchone()
+            if len(split_link) == 4:
+                if check_password_hash(split_link[3], album[0]["created_on"]) and split_link[2] == album[0]["hash"]:
+                    # get photos
+                    photos = database.execute(
+                        """SELECT *
+                        FROM photo
+                        JOIN album_photo ON photo.id = album_photo.photo_id
+                        JOIN album ON album_photo.album_id = album.id
+                        WHERE album.id = ?""", (split_link[1],)
+                    ).fetchall()
 
-            user = None
+                    # get comments
+                    comments = database.execute(
+                        """SELECT *
+                        FROM comment
+                        JOIN album_comment ON comment.id = album_comment.comment_id
+                        JOIN album ON album_comment.album_id = album.id
+                        WHERE album.id = ?""", (split_link[1],)
+                    ).fetchall()
 
-            if g.user is not None:
-                user = g.user['id']
+                    username = database.execute(
+                        """SELECT * FROM user WHERE id = ?""", (album[0]['created_by'],)
+                    ).fetchone()
 
-            return render_template('album.html', album_title = album[0]['title'], album_id = album_id, album_photos = photos, comments = comments, user = user, created_id = album[0]['created_by'], created_by = username['username'], created_on = album[0]['created_on'])
+                    user = None
 
+                    if g.user is not None:
+                        user = g.user['id']
+
+                    return render_template('album.html', album_title = album[0]['title'], album_id = split_link[1], album_photos = photos, comments = comments, user = user, created_id = album[0]['created_by'], created_by = username['username'], created_on = album[0]['created_on'])
+
+                else:
+                    return error_message("Link incorrect", 403)
+            else:
+                if check_password_hash(album[0]["hash"], split_link[2]):
+                    # get photos
+                    photos = database.execute(
+                        """SELECT *
+                        FROM photo
+                        JOIN album_photo ON photo.id = album_photo.photo_id
+                        JOIN album ON album_photo.album_id = album.id
+                        WHERE album.id = ?""", (split_link[1],)
+                    ).fetchall()
+
+                    # get comments
+                    comments = database.execute(
+                        """SELECT *
+                        FROM comment
+                        JOIN album_comment ON comment.id = album_comment.comment_id
+                        JOIN album ON album_comment.album_id = album.id
+                        WHERE album.id = ?""", (split_link[1],)
+                    ).fetchall()
+
+                    username = database.execute(
+                        """SELECT * FROM user WHERE id = ?""", (album[0]['created_by'],)
+                    ).fetchone()
+
+                    user = None
+
+                    if g.user is not None:
+                        user = g.user['id']
+
+                    return render_template('album.html', album_title = album[0]['title'], album_id = split_link[1], album_photos = photos, comments = comments, user = user, created_id = album[0]['created_by'], created_by = username['username'], created_on = album[0]['created_on'])
+                else:
+                    return error_message("Link incorrect", 403)
         else:
-            return error_message("Link incorrect", 403)
-
-    @app.route('/albumPasswordTwo/<album_id>/<hash1>/<hash2>')
-    def albumPasswordTwo(album_id, hash1, hash2):
-        database = db.get_db()
-        album = database.execute(
-            """SELECT * FROM album WHERE id = ?""", (album_id,)
-        ).fetchall()
-
-        if album == None:
-            return error_message("No album here", 403)
-
-        if check_password_hash(hash2, album[0]["created_on"]) and hash1 == album[0]["hash"]:
-            # get photos
-            photos = database.execute(
-                """SELECT *
-                FROM photo
-                JOIN album_photo ON photo.id = album_photo.photo_id
-                JOIN album ON album_photo.album_id = album.id
-                WHERE album.id = ?""", (album_id,)
-            ).fetchall()
-
-            # get comments
-            comments = database.execute(
-                """SELECT *
-                FROM comment
-                JOIN album_comment ON comment.id = album_comment.comment_id
-                JOIN album ON album_comment.album_id = album.id
-                WHERE album.id = ?""", (album_id,)
-            ).fetchall()
-
-            username = database.execute(
-                """SELECT * FROM user WHERE id = ?""", (album[0]['created_by'],)
-            ).fetchone()
-
-            user = None
-
-            if g.user is not None:
-                user = g.user['id']
-
-            return render_template('album.html', album_title = album[0]['title'], album_id = album_id, album_photos = photos, comments = comments, user = user, created_id = album[0]['created_by'], created_by = username['username'], created_on = album[0]['created_on'])
-
-        else:
-            return error_message("Link incorrect", 403)
+            return render_template('album-link.html')
 
 
     @app.route('/photo/<photo_id>')
@@ -670,8 +668,8 @@ def create_app(test_config=None):
         album_hash_1 = album_data[0]["hash"]
         album_hash_2 = generate_password_hash(album_data[0]["created_on"])
 
-        album_link = url_for("albumPasswordTwo", album_id = album_id, hash1 = album_hash_1, hash2 = album_hash_2, _external = True)
-        password_link = url_for("albumPassword", album_id = album_id, album_password = 'CHANGE_THIS', _external = True)
+        album_link = "albumLinkTwo/" + album_id + "/" + album_hash_1 + "/" + album_hash_2
+        password_link = "albumLink/" + album_id + "/" + 'CHANGE_THIS'
 
         return render_template('share-album.html', album = album_id, album_link = album_link, password_link = password_link)
 
