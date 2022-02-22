@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %}Use Album Link{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<form class="" action="/albumLink" method="post">
+  <label for="link">Link</label>
+  <input type="text" name="link" id="link" required>
+  <button class="btn btn-primary" type="submit">Get Album</button>
+</form>
+{% endblock %}
